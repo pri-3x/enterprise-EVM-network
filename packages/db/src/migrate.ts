@@ -31,7 +31,7 @@ if (isMain) {
   }
   runMigrations(url)
     .then(() => {
-      console.log('migrations applied');
+      process.stdout.write('migrations applied\n');
       process.exit(0);
     })
     .catch((err) => {

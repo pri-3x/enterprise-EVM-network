@@ -2,6 +2,8 @@ node_modules
 .git
 .next
 dist
+*.tsbuildinfo
+**/*.tsbuildinfo
 coverage
 contracts/artifacts
 contracts/cache

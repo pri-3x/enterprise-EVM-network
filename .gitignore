@@ -6,6 +6,7 @@ dist/
 .next/
 out/
 coverage/
+*.tsbuildinfo
 
 # hardhat
 contracts/artifacts/

@@ -32,11 +32,11 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npm run build -w @besu-net/shared -w @besu-net/db
+      - run: npm run build -w @besu-net/shared && npm run build -w @besu-net/db
       - run: npm run lint
-      - run: npm run typecheck -w @besu-net/api -w @besu-net/indexer -w @besu-net/db -w @besu-net/shared
-      - run: npm test -w @besu-net/api -w @besu-net/indexer
-      - run: npm run build -w @besu-net/api -w @besu-net/indexer
+      - run: npm run typecheck -w @besu-net/shared && npm run typecheck -w @besu-net/db && npm run typecheck -w @besu-net/api && npm run typecheck -w @besu-net/indexer
+      - run: npm test -w @besu-net/api && npm test -w @besu-net/indexer
+      - run: npm run build -w @besu-net/api && npm run build -w @besu-net/indexer
 
   docker:
     runs-on: ubuntu-latest

@@ -12,7 +12,11 @@ COPY tsconfig.base.json ./
 COPY packages/shared packages/shared
 COPY packages/db packages/db
 COPY apps/api apps/api
-RUN npm run build -w @besu-net/shared -w @besu-net/db -w @besu-net/api
+# npm runs multiple -w scripts in parallel. The API build must see shared's
+# emitted .d.ts files, so these stay sequential.
+RUN npm run build -w @besu-net/shared \
+ && npm run build -w @besu-net/db \
+ && npm run build -w @besu-net/api
 
 FROM node:20-bookworm-slim
 WORKDIR /app

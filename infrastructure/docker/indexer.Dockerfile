@@ -12,7 +12,9 @@ COPY tsconfig.base.json ./
 COPY packages/shared packages/shared
 COPY packages/db packages/db
 COPY apps/indexer apps/indexer
-RUN npm run build -w @besu-net/shared -w @besu-net/db -w @besu-net/indexer
+RUN npm run build -w @besu-net/shared \
+ && npm run build -w @besu-net/db \
+ && npm run build -w @besu-net/indexer
 
 FROM node:20-bookworm-slim
 WORKDIR /app

@@ -32,7 +32,7 @@ export function formatUnits(value: bigint | string, decimals = 18, precision = 4
   const abs = negative ? -v : v;
   const base = 10n ** BigInt(decimals);
   const whole = abs / base;
-  let frac = (abs % base).toString().padStart(decimals, '0').slice(0, precision).replace(/0+$/, '');
+  const frac = (abs % base).toString().padStart(decimals, '0').slice(0, precision).replace(/0+$/, '');
   const wholeStr = whole.toLocaleString('en-US');
   return `${negative ? '-' : ''}${wholeStr}${frac ? '.' + frac : ''}`;
 }
