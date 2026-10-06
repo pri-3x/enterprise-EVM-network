@@ -1,0 +1,238 @@
+# ---------------------------------------------------------------------------
+# Local development stack
+#
+#   docker compose up -d                    -> 4 Besu validators + Postgres + Prometheus + Grafana
+#   docker compose --profile apps up -d     -> additionally builds & runs api, indexer, frontend
+#
+# Validators get fixed IPs on the besu-net subnet because node permissioning
+# (besu/permissioning/permissions_config.toml) allowlists enode@ip:port.
+# Only validator-1 publishes RPC/metrics to the host; the other validators are
+# reachable solely on the internal docker network (mirrors the production
+# topology where validators never expose RPC publicly).
+# ---------------------------------------------------------------------------
+
+x-besu-validator: &besu-validator
+  image: ${BESU_IMAGE:-hyperledger/besu:26.9.0}
+  restart: unless-stopped
+  command: ["--config-file=/opt/besu/config/validator.toml"]
+  healthcheck:
+    # Besu image has no curl; use bash /dev/tcp to probe the RPC port
+    test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8545"]
+    interval: 10s
+    timeout: 5s
+    retries: 6
+    start_period: 30s
+  logging:
+    driver: json-file
+    options: { max-size: "50m", max-file: "3" }
+
+services:
+  # ---------------------------------------------------------------- Besu QBFT
+  validator-1:
+    <<: *besu-validator
+    container_name: besu-validator-1
+    environment:
+      BESU_P2P_HOST: 172.16.239.11
+      BESU_IDENTITY: validator-1
+    volumes:
+      - ./besu/config/validator.toml:/opt/besu/config/validator.toml:ro
+      - ./besu/genesis/genesis.json:/opt/besu/config/genesis.json:ro
+      - ./besu/permissioning/static-nodes.json:/opt/besu/config/static-nodes.json:ro
+      - ./besu/permissioning/permissions_config.toml:/opt/besu/config/permissions_config.toml:ro
+      - ./besu/keys/dev/validator-1/key:/opt/besu/keys/key:ro
+      - validator-1-data:/opt/besu/data
+    ports:
+      - "8545:8545" # HTTP JSON-RPC (dev only)
+      - "8546:8546" # WS JSON-RPC (dev only)
+      - "9545:9545" # Prometheus metrics (dev only)
+    networks:
+      besu-net:
+        ipv4_address: 172.16.239.11
+
+  validator-2:
+    <<: *besu-validator
+    container_name: besu-validator-2
+    environment:
+      BESU_P2P_HOST: 172.16.239.12
+      BESU_IDENTITY: validator-2
+    volumes:
+      - ./besu/config/validator.toml:/opt/besu/config/validator.toml:ro
+      - ./besu/genesis/genesis.json:/opt/besu/config/genesis.json:ro
+      - ./besu/permissioning/static-nodes.json:/opt/besu/config/static-nodes.json:ro
+      - ./besu/permissioning/permissions_config.toml:/opt/besu/config/permissions_config.toml:ro
+      - ./besu/keys/dev/validator-2/key:/opt/besu/keys/key:ro
+      - validator-2-data:/opt/besu/data
+    networks:
+      besu-net:
+        ipv4_address: 172.16.239.12
+
+  validator-3:
+    <<: *besu-validator
+    container_name: besu-validator-3
+    environment:
+      BESU_P2P_HOST: 172.16.239.13
+      BESU_IDENTITY: validator-3
+    volumes:
+      - ./besu/config/validator.toml:/opt/besu/config/validator.toml:ro
+      - ./besu/genesis/genesis.json:/opt/besu/config/genesis.json:ro
+      - ./besu/permissioning/static-nodes.json:/opt/besu/config/static-nodes.json:ro
+      - ./besu/permissioning/permissions_config.toml:/opt/besu/config/permissions_config.toml:ro
+      - ./besu/keys/dev/validator-3/key:/opt/besu/keys/key:ro
+      - validator-3-data:/opt/besu/data
+    networks:
+      besu-net:
+        ipv4_address: 172.16.239.13
+
+  validator-4:
+    <<: *besu-validator
+    container_name: besu-validator-4
+    environment:
+      BESU_P2P_HOST: 172.16.239.14
+      BESU_IDENTITY: validator-4
+    volumes:
+      - ./besu/config/validator.toml:/opt/besu/config/validator.toml:ro
+      - ./besu/genesis/genesis.json:/opt/besu/config/genesis.json:ro
+      - ./besu/permissioning/static-nodes.json:/opt/besu/config/static-nodes.json:ro
+      - ./besu/permissioning/permissions_config.toml:/opt/besu/config/permissions_config.toml:ro
+      - ./besu/keys/dev/validator-4/key:/opt/besu/keys/key:ro
+      - validator-4-data:/opt/besu/data
+    networks:
+      besu-net:
+        ipv4_address: 172.16.239.14
+
+  # ---------------------------------------------------------------- Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: besu-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-besu}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-besu_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-besu_network}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-besu} -d ${POSTGRES_DB:-besu_network}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [besu-net]
+
+  # ---------------------------------------------------------------- Monitoring
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    container_name: besu-prometheus
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=15d
+      - --web.enable-lifecycle
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alerts:/etc/prometheus/alerts:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    networks: [besu-net]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  grafana:
+    image: grafana/grafana:12.1.0
+    container_name: besu-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin_dev_password}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "${GRAFANA_PORT:-3300}:3000"
+    depends_on: [prometheus]
+    networks: [besu-net]
+
+  # ---------------------------------------------------------------- Applications
+  # (profile "apps": `docker compose --profile apps up -d --build`)
+  api:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/api.Dockerfile
+    image: besu-enterprise/api:local
+    container_name: besu-api
+    restart: unless-stopped
+    profiles: [apps]
+    env_file: .env
+    environment:
+      RPC_URL: http://validator-1:8545
+      WS_RPC_URL: ws://validator-1:8546
+      DATABASE_URL: postgresql://${POSTGRES_USER:-besu}:${POSTGRES_PASSWORD:-besu_dev_password}@postgres:5432/${POSTGRES_DB:-besu_network}
+      API_HOST: 0.0.0.0
+      API_PORT: 4000
+    ports:
+      - "${API_PORT:-4000}:4000"
+    depends_on:
+      postgres: { condition: service_healthy }
+      validator-1: { condition: service_healthy }
+    networks: [besu-net]
+
+  indexer:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/indexer.Dockerfile
+    image: besu-enterprise/indexer:local
+    container_name: besu-indexer
+    restart: unless-stopped
+    profiles: [apps]
+    env_file: .env
+    environment:
+      RPC_URL: http://validator-1:8545
+      WS_RPC_URL: ws://validator-1:8546
+      DATABASE_URL: postgresql://${POSTGRES_USER:-besu}:${POSTGRES_PASSWORD:-besu_dev_password}@postgres:5432/${POSTGRES_DB:-besu_network}
+      INDEXER_METRICS_PORT: 4100
+    ports:
+      - "${INDEXER_METRICS_PORT:-4100}:4100"
+    depends_on:
+      postgres: { condition: service_healthy }
+      validator-1: { condition: service_healthy }
+    networks: [besu-net]
+
+  frontend:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/frontend.Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+        NEXT_PUBLIC_NETWORK_NAME: ${NEXT_PUBLIC_NETWORK_NAME:-Enterprise Besu Network}
+    image: besu-enterprise/frontend:local
+    container_name: besu-frontend
+    restart: unless-stopped
+    profiles: [apps]
+    environment:
+      API_INTERNAL_URL: http://api:4000
+    ports:
+      - "${FRONTEND_PORT:-3001}:3000"
+    depends_on: [api]
+    networks: [besu-net]
+
+networks:
+  besu-net:
+    name: besu-net
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.239.0/24
+
+volumes:
+  validator-1-data:
+  validator-2-data:
+  validator-3-data:
+  validator-4-data:
+  postgres-data:
+  prometheus-data:
+  grafana-data:

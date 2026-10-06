@@ -1,0 +1,57 @@
+# ---------------------------------------------------------------------------
+# Hyperledger Besu validator configuration — PRODUCTION / STAGING
+#
+# Differences from validator.toml (dev):
+#   * RPC exposes only the APIs the backend actually needs (no ADMIN/DEBUG/PERM/TRACE)
+#   * host-allowlist and CORS restricted to the application server hostnames
+#   * WebSocket RPC disabled unless the indexer runs on the same host
+#   * p2p-host must be set per node to the server's PUBLIC/VPN IP via BESU_P2P_HOST
+#   * static-nodes / permissions_config.toml are generated per environment
+#
+# Administrative operations (adding validators, changing allowlists) are done
+# over SSH on the node itself — never over a public RPC endpoint.
+# ---------------------------------------------------------------------------
+
+data-path = "/opt/besu/data"
+genesis-file = "/opt/besu/config/genesis.json"
+node-private-key-file = "/opt/besu/keys/key"
+min-gas-price = 0
+
+p2p-enabled = true
+p2p-port = 30303
+discovery-enabled = false
+static-nodes-file = "/opt/besu/config/static-nodes.json"
+max-peers = 10
+remote-connections-limit-enabled = true
+
+permissions-nodes-config-file-enabled = true
+permissions-nodes-config-file = "/opt/besu/config/permissions_config.toml"
+
+sync-mode = "FULL"
+data-storage-format = "BONSAI"
+
+# RPC is bound to all interfaces inside the container but the HOST firewall
+# (infrastructure/firewall/ufw-validator.sh) only allows the application server
+# and the Nginx reverse proxy to reach port 8545.
+rpc-http-enabled = true
+rpc-http-host = "0.0.0.0"
+rpc-http-port = 8545
+rpc-http-api = ["ETH", "NET", "WEB3", "QBFT", "TXPOOL"]
+rpc-http-cors-origins = ["https://explorer.example.com", "https://besu.example.com"]
+rpc-http-max-active-connections = 100
+host-allowlist = ["api.example.com", "localhost", "127.0.0.1"]
+
+rpc-ws-enabled = true
+rpc-ws-host = "0.0.0.0"
+rpc-ws-port = 8546
+rpc-ws-api = ["ETH", "NET", "WEB3"]
+
+tx-pool = "SEQUENCED"
+tx-pool-max-size = 4096
+
+metrics-enabled = true
+metrics-host = "0.0.0.0"
+metrics-port = 9545
+metrics-category = ["BLOCKCHAIN", "ETHEREUM", "EXECUTORS", "JVM", "NETWORK", "PEERS", "PROCESS", "RPC", "SYNCHRONIZER", "TRANSACTION_POOL"]
+
+logging = "INFO"

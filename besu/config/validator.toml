@@ -1,0 +1,65 @@
+# ---------------------------------------------------------------------------
+# Hyperledger Besu validator configuration — LOCAL DEVELOPMENT
+#
+# Every option here maps 1:1 to a Besu CLI flag (https://besu.hyperledger.org/
+# public-networks/reference/cli/options). Per-node values (p2p-host, key path)
+# are injected through BESU_* environment variables in docker-compose.yml.
+#
+# Production nodes use validator.prod.toml which exposes a much smaller RPC
+# surface. See docs/besu.md for a justification of every value.
+# ---------------------------------------------------------------------------
+
+# --- Chain -----------------------------------------------------------------
+data-path = "/opt/besu/data"
+genesis-file = "/opt/besu/config/genesis.json"
+node-private-key-file = "/opt/besu/keys/key"
+# Private QBFT network: always free gas (genesis has zeroBaseFee=true)
+min-gas-price = 0
+
+# --- P2P networking ----------------------------------------------------------
+p2p-enabled = true
+p2p-port = 30303
+# Validators are a closed set; discovery is disabled and peers are provided
+# through the static-nodes file (plus the permissioning allowlist below).
+discovery-enabled = false
+static-nodes-file = "/opt/besu/config/static-nodes.json"
+max-peers = 25
+# Reject peers that aren't in the allowlist even if they know our enode
+# (defaults to true when permissioning is enabled; stated for clarity)
+remote-connections-limit-enabled = true
+
+# --- Permissioning -----------------------------------------------------------
+permissions-nodes-config-file-enabled = true
+permissions-nodes-config-file = "/opt/besu/config/permissions_config.toml"
+
+# --- Sync ---------------------------------------------------------------------
+sync-mode = "FULL"
+data-storage-format = "BONSAI"
+
+# --- JSON-RPC (dev: broad API set; prod config trims this) --------------------
+rpc-http-enabled = true
+rpc-http-host = "0.0.0.0"
+rpc-http-port = 8545
+rpc-http-api = ["ETH", "NET", "WEB3", "QBFT", "TXPOOL", "ADMIN", "PERM", "DEBUG", "TRACE"]
+rpc-http-cors-origins = ["*"]
+rpc-http-max-active-connections = 200
+host-allowlist = ["*"]
+
+rpc-ws-enabled = true
+rpc-ws-host = "0.0.0.0"
+rpc-ws-port = 8546
+rpc-ws-api = ["ETH", "NET", "WEB3", "QBFT"]
+
+# --- Transaction pool ---------------------------------------------------------
+tx-pool = "SEQUENCED"
+tx-pool-max-size = 4096
+tx-pool-limit-by-account-percentage = 1.0
+
+# --- Metrics (scraped by Prometheus on the internal docker network) ------------
+metrics-enabled = true
+metrics-host = "0.0.0.0"
+metrics-port = 9545
+metrics-category = ["BLOCKCHAIN", "ETHEREUM", "EXECUTORS", "JVM", "NETWORK", "PEERS", "PROCESS", "RPC", "SYNCHRONIZER", "TRANSACTION_POOL"]
+
+# --- Logging -------------------------------------------------------------------
+logging = "INFO"
