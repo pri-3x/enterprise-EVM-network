@@ -1,0 +1,14 @@
+node_modules
+dist
+.next
+coverage
+artifacts
+cache
+typechain-types
+besu/data
+besu/keys
+besu/genesis/genesis.json
+*.lock
+package-lock.json
+monitoring/grafana/dashboards/*.json
+docs/results/*.json

@@ -1,0 +1,47 @@
+{
+  "name": "besu-enterprise-network",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Production-style permissioned EVM network on Hyperledger Besu (QBFT) with contracts, API, indexer, explorer and monitoring",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "workspaces": [
+    "packages/*",
+    "contracts",
+    "apps/*"
+  ],
+  "scripts": {
+    "lint": "eslint . && npm run lint -w contracts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "contracts:compile": "npm run compile -w contracts",
+    "contracts:test": "npm run test -w contracts",
+    "contracts:deploy": "npm run deploy:besu -w contracts",
+    "db:migrate": "npm run migrate -w @besu-net/db",
+    "dev": "concurrently -n api,indexer,web -c blue,magenta,green \"npm run dev -w @besu-net/api\" \"npm run dev -w @besu-net/indexer\" \"npm run dev -w @besu-net/frontend\"",
+    "network:up": "docker compose up -d validator-1 validator-2 validator-3 validator-4",
+    "network:down": "docker compose stop validator-1 validator-2 validator-3 validator-4",
+    "network:logs": "docker compose logs -f validator-1",
+    "health": "bash scripts/health-check.sh",
+    "failure-test": "bash scripts/failure-test.sh",
+    "benchmark": "tsx scripts/benchmark.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "@types/node": "^20.19.0",
+    "concurrently": "^9.1.2",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.0.0",
+    "prettier": "^3.6.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.71.1"
+  }
+}
