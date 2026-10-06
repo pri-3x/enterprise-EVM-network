@@ -3,6 +3,8 @@
     "config": {
       "chainId": 7117,
       "londonBlock": 0,
+      "shanghaiTime": 0,
+      "cancunTime": 0,
       "zeroBaseFee": true,
       "qbft": {
         "blockperiodseconds": 2,

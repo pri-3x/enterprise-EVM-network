@@ -1,0 +1,31 @@
+{
+  "name": "@besu-net/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Solidity contracts for the Besu Enterprise Network (ERC-20 token, asset registry, transfer policy)",
+  "scripts": {
+    "compile": "hardhat compile && npm run export-abi",
+    "export-abi": "hardhat run scripts/export-abi.ts",
+    "test": "hardhat test",
+    "test:gas": "REPORT_GAS=true hardhat test",
+    "coverage": "hardhat coverage",
+    "lint": "solhint 'contracts/**/*.sol' && eslint .",
+    "typecheck": "tsc --noEmit",
+    "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
+    "deploy:besu": "hardhat run scripts/deploy.ts --network besu",
+    "seed:besu": "hardhat run scripts/seed.ts --network besu",
+    "clean": "hardhat clean"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts": "^5.6.1",
+    "dotenv": "^16.4.7",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "hardhat": "^2.29.1",
+    "solhint": "^5.2.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.71.1"
+  }
+}
