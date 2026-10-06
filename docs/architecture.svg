@@ -1,65 +1,66 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
-  <rect width="1200" height="760" fill="#f7f9fb"/>
-  <text x="40" y="48" font-family="IBM Plex Sans, Helvetica, sans-serif" font-size="22" font-weight="600" fill="#162033">Enterprise Besu Network</text>
-  <text x="40" y="72" font-family="IBM Plex Sans, Helvetica, sans-serif" font-size="13" fill="#6b7c93">Permissioned QBFT � chain 7117 � production-style portfolio infrastructure</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+  <rect width="1200" height="1200" fill="#f7f9fb"/>
+  <text x="60" y="70" font-family="Helvetica, Arial, sans-serif" font-size="32" font-weight="700" fill="#162033">Enterprise Besu Network</text>
+  <text x="60" y="104" font-family="Helvetica, Arial, sans-serif" font-size="16" fill="#6b7c93">Permissioned QBFT | chain 7117 | four validators</text>
 
-  <g font-family="IBM Plex Sans, Helvetica, sans-serif" font-size="13" fill="#162033">
-    <rect x="500" y="100" width="200" height="52" rx="8" fill="#0e1420"/>
-    <text x="600" y="131" text-anchor="middle" fill="#ffffff" font-weight="600">Users</text>
+  <rect x="470" y="150" width="260" height="56" rx="10" fill="#0e1420"/>
+  <text x="600" y="184" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#ffffff">Users</text>
 
-    <rect x="180" y="200" width="220" height="64" rx="8" fill="#ffffff" stroke="#d5deea"/>
-    <text x="290" y="226" text-anchor="middle" font-weight="600">Next.js dashboard</text>
-    <text x="290" y="246" text-anchor="middle" fill="#6b7c93" font-size="12">explorer included</text>
+  <rect x="140" y="270" width="280" height="78" rx="10" fill="#ffffff" stroke="#d5deea" stroke-width="2"/>
+  <text x="280" y="302" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#162033">Next.js dashboard</text>
+  <text x="280" y="326" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#6b7c93">explorer included</text>
 
-    <rect x="800" y="200" width="220" height="64" rx="8" fill="#ffffff" stroke="#d5deea"/>
-    <text x="910" y="226" text-anchor="middle" font-weight="600">Grafana</text>
-    <text x="910" y="246" text-anchor="middle" fill="#6b7c93" font-size="12">Prometheus alerts</text>
+  <rect x="780" y="270" width="280" height="78" rx="10" fill="#ffffff" stroke="#d5deea" stroke-width="2"/>
+  <text x="920" y="302" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#162033">Grafana</text>
+  <text x="920" y="326" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#6b7c93">Prometheus alerts</text>
 
-    <rect x="460" y="310" width="280" height="64" rx="8" fill="#ffffff" stroke="#d5deea"/>
-    <text x="600" y="336" text-anchor="middle" font-weight="600">Fastify API</text>
-    <text x="600" y="356" text-anchor="middle" fill="#6b7c93" font-size="12">auth � validation � tx lifecycle</text>
+  <rect x="410" y="410" width="380" height="78" rx="10" fill="#ffffff" stroke="#d5deea" stroke-width="2"/>
+  <text x="600" y="442" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#162033">Fastify API</text>
+  <text x="600" y="466" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#6b7c93">auth, validation, transaction lifecycle</text>
 
-    <rect x="460" y="420" width="280" height="48" rx="8" fill="#e5f6ef" stroke="#12805f"/>
-    <text x="600" y="449" text-anchor="middle" font-weight="600" fill="#0f6e56">JSON-RPC over TLS / private network</text>
+  <rect x="390" y="540" width="420" height="52" rx="10" fill="#e5f6ef" stroke="#12805f" stroke-width="2"/>
+  <text x="600" y="572" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#0f6e56">JSON-RPC on the private network</text>
 
-    <rect x="80" y="520" width="180" height="70" rx="8" fill="#162033"/>
-    <text x="170" y="550" text-anchor="middle" fill="#ffffff" font-weight="600">Validator 1</text>
-    <text x="170" y="570" text-anchor="middle" fill="#d5deea" font-size="12">Besu QBFT</text>
+  <rect x="40" y="660" width="200" height="80" rx="10" fill="#162033"/>
+  <text x="140" y="696" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff">Validator 1</text>
+  <text x="140" y="718" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#d5deea">Besu QBFT</text>
 
-    <rect x="300" y="520" width="180" height="70" rx="8" fill="#162033"/>
-    <text x="390" y="550" text-anchor="middle" fill="#ffffff" font-weight="600">Validator 2</text>
-    <text x="390" y="570" text-anchor="middle" fill="#d5deea" font-size="12">Besu QBFT</text>
+  <rect x="270" y="660" width="200" height="80" rx="10" fill="#162033"/>
+  <text x="370" y="696" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff">Validator 2</text>
+  <text x="370" y="718" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#d5deea">Besu QBFT</text>
 
-    <rect x="520" y="520" width="180" height="70" rx="8" fill="#162033"/>
-    <text x="610" y="550" text-anchor="middle" fill="#ffffff" font-weight="600">Validator 3</text>
-    <text x="610" y="570" text-anchor="middle" fill="#d5deea" font-size="12">Besu QBFT</text>
+  <rect x="500" y="660" width="200" height="80" rx="10" fill="#162033"/>
+  <text x="600" y="696" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff">Validator 3</text>
+  <text x="600" y="718" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#d5deea">Besu QBFT</text>
 
-    <rect x="740" y="520" width="180" height="70" rx="8" fill="#162033"/>
-    <text x="830" y="550" text-anchor="middle" fill="#ffffff" font-weight="600">Validator 4</text>
-    <text x="830" y="570" text-anchor="middle" fill="#d5deea" font-size="12">Besu QBFT</text>
+  <rect x="730" y="660" width="200" height="80" rx="10" fill="#162033"/>
+  <text x="830" y="696" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff">Validator 4</text>
+  <text x="830" y="718" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#d5deea">Besu QBFT</text>
 
-    <rect x="980" y="400" width="180" height="70" rx="8" fill="#ffffff" stroke="#d5deea"/>
-    <text x="1070" y="430" text-anchor="middle" font-weight="600">PostgreSQL</text>
-    <text x="1070" y="450" text-anchor="middle" fill="#6b7c93" font-size="12">indexer + checkpoint</text>
+  <rect x="140" y="860" width="360" height="78" rx="10" fill="#ffffff" stroke="#d5deea" stroke-width="2"/>
+  <text x="320" y="892" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#162033">Indexer</text>
+  <text x="320" y="916" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#6b7c93">restart-safe, checkpointed</text>
 
-    <rect x="980" y="520" width="180" height="70" rx="8" fill="#ffffff" stroke="#d5deea"/>
-    <text x="1070" y="550" text-anchor="middle" font-weight="600">Indexer</text>
-    <text x="1070" y="570" text-anchor="middle" fill="#6b7c93" font-size="12">restart-safe</text>
+  <rect x="700" y="860" width="360" height="78" rx="10" fill="#ffffff" stroke="#d5deea" stroke-width="2"/>
+  <text x="880" y="892" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#162033">PostgreSQL</text>
+  <text x="880" y="916" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#6b7c93">blocks, transactions, assets</text>
+
+  <text x="600" y="1040" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" fill="#3d4d66">N = 4 = 3f + 1, so f = 1. One validator can be down and blocks still finalise.</text>
+  <text x="600" y="1068" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" fill="#3d4d66">Production RPC does not expose admin, debug, or trace methods.</text>
+
+  <g stroke="#3d4d66" stroke-width="2" fill="none">
+    <path d="M600 206 V270"/>
+    <path d="M280 348 V380 H410"/>
+    <path d="M920 348 V380 H790"/>
+    <path d="M600 488 V540"/>
+    <path d="M140 592 V660"/>
+    <path d="M370 592 V660"/>
+    <path d="M600 592 V660"/>
+    <path d="M830 592 V660"/>
+    <path d="M490 592 H140"/>
+    <path d="M710 592 H830"/>
+    <path d="M320 740 V860"/>
+    <path d="M880 740 V860"/>
+    <path d="M500 899 H700"/>
   </g>
-
-  <g stroke="#3d4d66" stroke-width="1.5" fill="none">
-    <path d="M600 152 V200"/>
-    <path d="M290 264 V337 H460"/>
-    <path d="M910 264 V230 H700 V310"/>
-    <path d="M600 374 V420"/>
-    <path d="M520 468 V520"/>
-    <path d="M600 468 V520"/>
-    <path d="M680 468 H830 V520"/>
-    <path d="M560 468 H170 V520"/>
-    <path d="M740 555 H980"/>
-    <path d="M1070 470 V520"/>
-    <path d="M980 435 H740"/>
-  </g>
-
-  <text x="40" y="720" font-family="IBM Plex Sans, Helvetica, sans-serif" font-size="12" fill="#6b7c93">N = 4 = 3f + 1, so f = 1. One validator can be down and the chain still finalises blocks. RPC administrative methods are not exposed in production.</text>
 </svg>
