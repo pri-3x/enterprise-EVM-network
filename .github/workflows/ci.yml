@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  app:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: besu
+          POSTGRES_PASSWORD: besu_dev_password
+          POSTGRES_DB: besu_network
+        ports: ['5433:5432']
+        options: >-
+          --health-cmd "pg_isready -U besu -d besu_network"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://besu:besu_dev_password@localhost:5433/besu_network
+      RPC_URL: http://localhost:8545
+      CHAIN_ID: '7117'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build -w @besu-net/shared -w @besu-net/db
+      - run: npm run lint
+      - run: npm run typecheck -w @besu-net/api -w @besu-net/indexer -w @besu-net/db -w @besu-net/shared
+      - run: npm test -w @besu-net/api -w @besu-net/indexer
+      - run: npm run build -w @besu-net/api -w @besu-net/indexer
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -f infrastructure/docker/api.Dockerfile -t besu-enterprise/api:ci .
+      - run: docker build -f infrastructure/docker/indexer.Dockerfile -t besu-enterprise/indexer:ci .

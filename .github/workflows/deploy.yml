@@ -1,0 +1,30 @@
+name: Deploy
+
+# Manual only. Building images does not touch a server.
+# Shipping them requires the production environment secrets:
+#   DEPLOY_HOST, DEPLOY_USER, DEPLOY_SSH_KEY
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -f infrastructure/docker/api.Dockerfile -t besu-enterprise/api:${{ github.sha }} .
+      - run: docker build -f infrastructure/docker/indexer.Dockerfile -t besu-enterprise/indexer:${{ github.sha }} .
+      - run: docker build -f infrastructure/docker/frontend.Dockerfile -t besu-enterprise/frontend:${{ github.sha }} .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Require an operator
+        run: |
+          if [ -z "${{ secrets.DEPLOY_HOST }}" ]; then
+            echo "DEPLOY_HOST is not configured. Images were built; deployment is waiting for server secrets."
+            echo "Follow docs/deployment.md once a VPS and domain are available."
+            exit 0
+          fi
+          echo "Remote deploy is wired in docs/deployment.md. Add the SSH step here when the host exists."

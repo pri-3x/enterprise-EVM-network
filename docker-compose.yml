@@ -121,6 +121,23 @@ services:
     networks: [besu-net]
 
   # ---------------------------------------------------------------- Monitoring
+  node-exporter:
+    image: prom/node-exporter:v1.9.1
+    container_name: besu-node-exporter
+    restart: unless-stopped
+    pid: host
+    command:
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --path.rootfs=/rootfs
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    ports:
+      - "9100:9100"
+    networks: [besu-net]
+
   prometheus:
     image: prom/prometheus:v3.5.0
     container_name: besu-prometheus

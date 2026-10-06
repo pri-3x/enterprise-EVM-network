@@ -1,0 +1,26 @@
+[Unit]
+Description=Besu QBFT validator
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+WorkingDirectory=/opt/besu-enterprise-network
+# One validator per host. Set VALIDATOR_NAME=validator-1 in /etc/besu/validator.env
+EnvironmentFile=/etc/besu/validator.env
+ExecStart=/usr/bin/docker run --rm --name besu-%i \
+  --network host \
+  -v /opt/besu-enterprise-network/besu/config/validator.prod.toml:/opt/besu/config/validator.toml:ro \
+  -v /opt/besu-enterprise-network/besu/genesis/genesis.json:/opt/besu/config/genesis.json:ro \
+  -v /etc/besu/static-nodes.json:/opt/besu/config/static-nodes.json:ro \
+  -v /etc/besu/permissions_config.toml:/opt/besu/config/permissions_config.toml:ro \
+  -v /etc/besu/keys/key:/opt/besu/keys/key:ro \
+  -v /var/lib/besu:/opt/besu/data \
+  hyperledger/besu:26.9.0 \
+  --config-file=/opt/besu/config/validator.toml
+ExecStop=/usr/bin/docker stop besu-%i
+
+[Install]
+WantedBy=multi-user.target

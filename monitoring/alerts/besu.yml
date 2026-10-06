@@ -1,0 +1,51 @@
+groups:
+  - name: besu-enterprise
+    rules:
+      - alert: ValidatorDown
+        expr: up{job="besu"} == 0
+        for: 1m
+        labels: { severity: critical }
+        annotations:
+          summary: Besu validator metrics target is down
+
+      - alert: NoPeers
+        expr: ethereum_peer_count{job="besu"} == 0
+        for: 2m
+        labels: { severity: critical }
+        annotations:
+          summary: Validator reports zero peers
+
+      - alert: BlockProductionStalled
+        expr: increase(ethereum_blockchain_height{job="besu"}[2m]) == 0
+        for: 2m
+        labels: { severity: critical }
+        annotations:
+          summary: Chain height has not increased for 2 minutes
+
+      - alert: IndexerLagHigh
+        expr: indexer_lag_blocks > 20
+        for: 2m
+        labels: { severity: warning }
+        annotations:
+          summary: Indexer is more than 20 blocks behind the chain
+
+      - alert: ApiDown
+        expr: up{job="api"} == 0
+        for: 1m
+        labels: { severity: critical }
+        annotations:
+          summary: API metrics target is down
+
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"}) < 0.2
+        for: 10m
+        labels: { severity: warning }
+        annotations:
+          summary: Filesystem has less than 20% free space
+
+      - alert: IndexerDown
+        expr: up{job="indexer"} == 0
+        for: 1m
+        labels: { severity: critical }
+        annotations:
+          summary: Indexer metrics target is down

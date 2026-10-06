@@ -1,0 +1,22 @@
+name: Contracts
+
+on:
+  push:
+    branches: [main]
+    paths: ['contracts/**', '.github/workflows/contracts.yml']
+  pull_request:
+    paths: ['contracts/**']
+
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint -w contracts
+      - run: npm run contracts:compile
+      - run: npm run contracts:test

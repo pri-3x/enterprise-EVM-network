@@ -101,8 +101,8 @@ export interface AssetRecord {
   value: string;
   owner: string;
   active: boolean;
-  createdAt: number;
-  updatedAt: number;
+  registeredBlock: number;
+  updatedBlock: number;
 }
 
 export interface TokenInfo {
